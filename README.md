@@ -4,7 +4,6 @@ Test on Linux your Flipper Zero BadUSB Scripts without loading the payload onto 
 After experimenting for a while and writing some BadUSB Ducky scripts on Flipper Zero, I felt a bit overwhelmed by the [workflow](https://docs.flipper.net/zero/bad-usb) every time I wanted to test a change in the script.
 I've been searching and testing some other solutions but I found lot of issues related with Linux graphical environment permissions and I decided to write something simple to test and write my FlipperZero's DuckyScripts.
 
-Right now only tested on **ArchLinux**.
 
 ## Usage
 
@@ -39,6 +38,13 @@ Depends on [ydotool](https://github.com/ReimuNotMoe/ydotool) for command-line au
 - Install it: `$ sudo pacman -S ydotool`
 
 - Run the service: `$ systemctl --user start ydotool`
+
+#### Ubuntu (24.04 noble)
+- Install it: `$ sudo apt install -y ydotool`
+
+- Run the service: `$ systemctl --user start ydotool`
+
+Note: had some inssues install it it from Ubuntu current package, but [build it from source](https://github.com/ReimuNotMoe/ydotool?tab=readme-ov-file#build) and install it worked for me.
 
 ## Current Flipper's DuckyScript implemented commands
 - DEFAULT_DELAY
