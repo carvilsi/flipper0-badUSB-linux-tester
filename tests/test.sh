@@ -3,6 +3,7 @@ set -e
 
 # test folders
 FOLDER_TEST=tests
+FOLDER_DUCKYSCRPT_TEST=$FOLDER_TEST/duckyscript-test-files
 FOLDER_OUT=$FOLDER_TEST/outputs
 FOLDER_EXPECTED_OUT=$FOLDER_TEST/expected_outputs
 
@@ -17,12 +18,12 @@ get_diff_out_vs_expected() {
 # the test
 do_tests() {
         # list the content of duckyScript test folder
-        ls $FOLDER_TEST/*.txt | while read _duckyscript; do
+        ls $FOLDER_DUCKYSCRPT_TEST/*.txt | while read _duckyscript; do
                 # some useful filename vars 
                 _filename="${_duckyscript##*/}"
                 _filenamewe="${_filename%.*}"
                 _out=$FOLDER_OUT/${_filenamewe}_out.sh
-
+                
                 # convert DuckyScripts to ydotool output ones
                 python flipper0badusb_test.py $_duckyscript $_out silence
 
@@ -33,7 +34,7 @@ do_tests() {
                 _res=$(get_diff_out_vs_expected $_out $_expct) 
 
                 # compare and exit if there is differences
-                if [ $((_res)) -eq 0 ]; then
+                if [[ $((_res)) -eq 0 ]]; then
                         echo "[OK] $_duckyscript and $_expct"
                 else
                         echo "[NOK] $_duckyscript and $_expct"
