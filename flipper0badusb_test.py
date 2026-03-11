@@ -20,6 +20,26 @@ def get_input_event_code_key(char_key):
         else:
             raise Exception("input event key code not found")
 
+# TODO: ID 1234:abcd Generic:USB Keyboard
+# REM Open terminal window
+# ALT F2
+# DELAY 1000
+# REM Let's guess user terminal, based on (almost) glib order with ptyxis now default in Fedora 41
+# STRING sh -c "xdg-terminal-exec||kgx||ptyxis||gnome-terminal||mate-terminal||xfce4-terminal||tilix||konsole||xterm"
+# DELAY 300
+# ENTER
+# REM It can take a bit to open the correct terminal
+# DELAY 1500
+# 
+# REM Make sure we are running in a POSIX-compliant shell
+# STRING env sh
+# ENTER
+
+# TODO: implement ALT and F2 for run-command
+# $ ydotool key 56:1 60:1 60:0 56:0
+# KEY_LEFTALT 56 
+# KEY_F2 60
+# TODO: add tests
 
 class DuckyScriptCommands:
     # Commands from DuckyScript to this
@@ -63,7 +83,7 @@ def build_ydotool_command_type(string):
     return f"{YDTL} type '{string}'\n"
 
 
-def process_duckyscript_line(line, num, fos):
+def process_duckyscript_line(line, num, fos, silence=False):
     commands = line.replace("\n", "").split(" ")
 
     dcmd = None
@@ -113,7 +133,8 @@ def process_duckyscript_line(line, num, fos):
     if default_delay is not None:
         fos.write(default_delay)
 
-    print(f"{num}: {line}")
+    if not silence:
+        print(f"{num}: {line}")
 
 
 def main():
@@ -125,28 +146,31 @@ def main():
         ydotoolscript = open(fout, "w", encoding="UTF-8")
 
         execute = True if len(sys.argv) > 3 and sys.argv[3] == "test" else False
+        silence = True if len(sys.argv) > 3 and sys.argv[3] == "silence" else False
 
         ydotoolscript.write("#!/bin/bash\n\n")
 
         ydotoolscript.write("# parsed onto ydotool commands by flipper0badusb_test with <3 by (#4|2\n")
         ydotoolscript.write("# https://github.com/carvilsi/flipper0-badUSB-linux-tester\n")
         
-        print("\n")
-        print("▐▘▜ ▘        ▄▖▌    ▌    ▌   ▗     ▗ ") 
-        print("▜▘▐ ▌▛▌▛▌█▌▛▘▛▌▛▌▀▌▛▌▌▌▛▘▛▌  ▜▘█▌▛▘▜▘")
-        print("▐ ▐▖▌▙▌▙▌▙▖▌ █▌▙▌█▌▙▌▙▌▄▌▙▌▄▖▐▖▙▖▄▌▐▖")
-        print("     ▌ ▌                             ") 
-        print("with <3 by (#4|2\n\n") 
+        if not silence:
+            print("\n")
+            print("▐▘▜ ▘        ▄▖▌    ▌    ▌   ▗     ▗ ") 
+            print("▜▘▐ ▌▛▌▛▌█▌▛▘▛▌▛▌▀▌▛▌▌▌▛▘▛▌  ▜▘█▌▛▘▜▘")
+            print("▐ ▐▖▌▙▌▙▌▙▖▌ █▌▙▌█▌▙▌▙▌▄▌▙▌▄▖▐▖▙▖▄▌▐▖")
+            print("     ▌ ▌                             ") 
+            print("with <3 by (#4|2\n\n") 
 
-        print(f"Parsing...\n")
+            print(f"Parsing...\n")
         
         command_num = 0
         for line in duckyscript:
             if len(line.strip()) > 0:
-                process_duckyscript_line(line, command_num, ydotoolscript)
+                process_duckyscript_line(line, command_num, ydotoolscript, silence)
                 command_num += 1
 
-        print(f"Parsed {command_num} lines from {fdckscrp} onto {fout}\n")
+        if not silence:
+            print(f"Parsed {command_num} lines from {fdckscrp} onto {fout}\n")
 
         duckyscript.close()
         ydotoolscript.close()
