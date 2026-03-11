@@ -6,6 +6,8 @@
 - implemented:
     - ALT
     - F2 
+    - ESC
+    - ID for define a USB device
 
 # [v1.0.0](https://github.com/carvilsi/caetra/releases/tag/v1.0.0) (2026-09-03)
 
