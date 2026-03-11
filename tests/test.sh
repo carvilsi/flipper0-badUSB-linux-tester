@@ -34,7 +34,7 @@ do_tests() {
                 _res=$(get_diff_out_vs_expected $_out $_expct) 
 
                 # compare and exit if there is differences
-                if [[ $((_res)) -eq 0 ]]; then
+                if [ $((_res)) -eq 0 ]; then
                         echo "[OK] $_duckyscript and $_expct"
                 else
                         echo "[NOK] $_duckyscript and $_expct"
