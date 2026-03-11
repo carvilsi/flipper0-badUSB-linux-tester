@@ -1,0 +1,19 @@
+REM trying stuff
+
+REM Open Terminal app
+GUI a
+STRING Terminal
+DELAY 5000
+ENTER
+
+REM Wait 10 seconds after all commands
+DELAY 10000
+
+REM echo something 
+STRING echo "The world is all that is the case"
+ENTER
+STRINGLN echo "The world is the totality of facts, not of things"
+
+REM hide the Terminal app
+GUI h
+
