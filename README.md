@@ -60,7 +60,9 @@ Note: had some inssues install it it from Ubuntu current package, but [build it 
 |ALT|
 |GUI|
 |REM|
+|ESC|
 |F2|
+|ID|
 
 More info about Flipper's [BadUSB File Format](https://developer.flipper.net/flipperzero/doxygen/badusb_file_format.html)
 
