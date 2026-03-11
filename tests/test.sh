@@ -19,7 +19,7 @@ do_tests() {
         # list the content of duckyScript test folder
         ls $FOLDER_TEST/*.txt | while read _duckyscript; do
                 # some useful filename vars 
-                _filename=("${_duckyscript##*/}")
+                _filename="${_duckyscript##*/}"
                 _filenamewe="${_filename%.*}"
                 _out=$FOLDER_OUT/${_filenamewe}_out.sh
 
