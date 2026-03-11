@@ -43,6 +43,7 @@ do_tests() {
         done
 }
 
+mkdir -p $FOLDER_OUT/
 clean_test_results
 do_tests
 clean_test_results
