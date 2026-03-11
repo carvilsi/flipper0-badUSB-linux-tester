@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# parsed onto ydotool commands by flipper0badusb_test with <3 by (#4|2
+# Parsed onto ydotool commands by flipper0badusb_test with <3 by (#4|2
 # https://github.com/carvilsi/flipper0-badUSB-linux-tester
 # trying stuff
 # Open Terminal app
