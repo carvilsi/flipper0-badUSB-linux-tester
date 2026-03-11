@@ -17,10 +17,11 @@ Wrong arguments.
 
 Usage:
 
-    $ ./flipper0badusb_test <flipper_ducky_script_file.txt> <out_file.sh> [test]
+    $ ./flipper0badusb_test <flipper_ducky_script_file.txt> <out_file.sh> [test | silence]
 
 
-If "test" is provided will run the DuckyScript after parsing it
+If "test" is provided will run the DuckyScript after parsing it to ydotool.
+If "silence" is provided will generate ydotool file without print to stdout. "Silence is goldenn" mode.
 ```
 
 The you can test your FlipperZero's DuckyScript with:
@@ -29,7 +30,7 @@ The you can test your FlipperZero's DuckyScript with:
 
 Or pass "test" after the command line and it will be executed after creating the sh file.
 
-`$ ./flipper0badusb_test.py examples/hello-world.txt out.sh ex`
+`$ ./flipper0badusb_test.py examples/hello-world.txt out.sh test`
 
 ### Dependencies
 Depends on [ydotool](https://github.com/ReimuNotMoe/ydotool) for command-line automation tool on Linux. 
@@ -47,14 +48,19 @@ Depends on [ydotool](https://github.com/ReimuNotMoe/ydotool) for command-line au
 Note: had some inssues install it it from Ubuntu current package, but [build it from source](https://github.com/ReimuNotMoe/ydotool?tab=readme-ov-file#build) and install it worked for me.
 
 ## Current Flipper's DuckyScript implemented commands
-- DEFAULT_DELAY
-- DEFAULTDELAY
-- STRINGLN
-- STRING
-- DELAY
-- ENTER
-- GUI
-- REM
+
+| Implemented |
+|-------------|
+|DEFAULT_DELAY|
+|DEFAULTDELAY|
+|STRINGLN|
+|STRING|
+|DELAY|
+|ENTER|
+|ALT|
+|GUI|
+|REM|
+|F2|
 
 More info about Flipper's [BadUSB File Format](https://developer.flipper.net/flipperzero/doxygen/badusb_file_format.html)
 

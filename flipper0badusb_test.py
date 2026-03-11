@@ -9,6 +9,7 @@ INPUT_EVENT_CODES_H = "/usr/include/linux/input-event-codes.h"
 
 default_delay = None
 
+
 def get_input_event_code_key(char_key):
     with open(INPUT_EVENT_CODES_H, "r") as f:
         header_file = f.read()
@@ -20,26 +21,6 @@ def get_input_event_code_key(char_key):
         else:
             raise Exception("input event key code not found")
 
-# TODO: ID 1234:abcd Generic:USB Keyboard
-# REM Open terminal window
-# ALT F2
-# DELAY 1000
-# REM Let's guess user terminal, based on (almost) glib order with ptyxis now default in Fedora 41
-# STRING sh -c "xdg-terminal-exec||kgx||ptyxis||gnome-terminal||mate-terminal||xfce4-terminal||tilix||konsole||xterm"
-# DELAY 300
-# ENTER
-# REM It can take a bit to open the correct terminal
-# DELAY 1500
-# 
-# REM Make sure we are running in a POSIX-compliant shell
-# STRING env sh
-# ENTER
-
-# TODO: implement ALT and F2 for run-command
-# $ ydotool key 56:1 60:1 60:0 56:0
-# KEY_LEFTALT 56 
-# KEY_F2 60
-# TODO: add tests
 
 class DuckyScriptCommands:
     # Commands from DuckyScript to this
@@ -51,10 +32,16 @@ class DuckyScriptCommands:
     ENTER = "ENTER"
     GUI = "GUI"
     REM = "REM"
+    ALT = "ALT"
+    ESC = "ESC"
+    F2 = "F2"
+    ID = "ID"
 
     # definitions key names at /user/include/linux/input-event-codes.h
     ENTER_KEY = "ENTER"
     GUI_KEY = "LEFTMETA"
+    ALT_KEY = "LEFTALT"
+    ESC_KEY = "ESC"
 
     # helpers
     DELAY_SYMB = "sleep"
@@ -83,6 +70,11 @@ def build_ydotool_command_type(string):
     return f"{YDTL} type '{string}'\n"
 
 
+def format_delay(commands):
+    value = float(int(commands[1:][0]) / 1000)
+    return int(value) if value.is_integer() else value
+
+
 def process_duckyscript_line(line, num, fos, silence=False):
     commands = line.replace("\n", "").split(" ")
 
@@ -96,9 +88,7 @@ def process_duckyscript_line(line, num, fos, silence=False):
                     DuckyScriptCommands.GUI_KEY, commands[1]
                 )
             else:
-                dcmd = build_ydotool_command_key(
-                    DuckyScriptCommands.GUI_KEY, commands[1]
-                )
+                dcmd = build_ydotool_command_key(DuckyScriptCommands.GUI_KEY)
 
         case DuckyScriptCommands.REM:
             dcmd = f"{DuckyScriptCommands.REM_SYMB} {' '.join(commands[1:])}\n"
@@ -111,23 +101,37 @@ def process_duckyscript_line(line, num, fos, silence=False):
             dcmd += build_ydotool_command_key(DuckyScriptCommands.ENTER_KEY)
 
         case DuckyScriptCommands.DELAY:
-            dcmd = (
-                f"{DuckyScriptCommands.DELAY_SYMB} {int(int(commands[1:][0]) / 1000)}\n"
-            )
-        
+            dcmd = f"{DuckyScriptCommands.DELAY_SYMB} {format_delay(commands)}\n"
+
         case DuckyScriptCommands.DEFAULTDELAY | DuckyScriptCommands.DEFAULT_DELAY:
             default_delay = (
-                f"{DuckyScriptCommands.DELAY_SYMB} {int(int(commands[1:][0]) / 1000)}\n"
+                f"{DuckyScriptCommands.DELAY_SYMB} {format_delay(commands)}\n"
             )
 
         case DuckyScriptCommands.ENTER:
             dcmd = build_ydotool_command_key(DuckyScriptCommands.ENTER_KEY)
 
+        case DuckyScriptCommands.ALT:
+            if len(commands) > 0:
+                dcmd = build_ydotool_command_key(
+                    DuckyScriptCommands.ALT_KEY, commands[1]
+                )
+            else:
+                dcmd = build_ydotool_command_key(DuckyScriptCommands.ALT_KEY)
+
+        case DuckyScriptCommands.ID:
+            # nothing to do when defining a device ID, eg:
+            # ID 1234:abcd Generic:USB Keyboard
+            pass
+
+        case DuckyScriptCommands.ESC:
+            dcmd = build_ydotool_command_key(DuckyScriptCommands.ESC_KEY)
+
         case _:
             err_msg = f"Unknown or not implemented DuckyScript command: {commands[0]}"
             raise Exception(err_msg)
 
-    if dcmd is not None: 
+    if dcmd is not None:
         fos.write(dcmd)
 
     if default_delay is not None:
@@ -135,6 +139,30 @@ def process_duckyscript_line(line, num, fos, silence=False):
 
     if not silence:
         print(f"{num}: {line}")
+
+
+def header():
+    print("\n")
+    print("▐▘▜ ▘        ▄▖▌    ▌    ▌   ▗     ▗ ")
+    print("▜▘▐ ▌▛▌▛▌█▌▛▘▛▌▛▌▀▌▛▌▌▌▛▘▛▌  ▜▘█▌▛▘▜▘")
+    print("▐ ▐▖▌▙▌▙▌▙▖▌ █▌▙▌█▌▙▌▙▌▄▌▙▌▄▖▐▖▙▖▄▌▐▖")
+    print("     ▌ ▌                             ")
+    print("with <3 by (#4|2\n\n")
+
+
+def show_help():
+    header()
+    print("Wrong arguments.\n")
+    print("Usage:\n")
+    print(
+        "\t$ ./flipper0badusb_test <flipper_ducky_script_file.txt> <out_file.sh> [test | silence]\n"
+    )
+    print(
+        "\nIf 'test' is provided will run the DuckyScript after parsing it to ydotool"
+    )
+    print(
+        "If 'silence' is provided will generate ydotool file without print to stdout. 'Silence is goldenn' mode\n"
+    )
 
 
 def main():
@@ -150,19 +178,17 @@ def main():
 
         ydotoolscript.write("#!/bin/bash\n\n")
 
-        ydotoolscript.write("# parsed onto ydotool commands by flipper0badusb_test with <3 by (#4|2\n")
-        ydotoolscript.write("# https://github.com/carvilsi/flipper0-badUSB-linux-tester\n")
-        
-        if not silence:
-            print("\n")
-            print("▐▘▜ ▘        ▄▖▌    ▌    ▌   ▗     ▗ ") 
-            print("▜▘▐ ▌▛▌▛▌█▌▛▘▛▌▛▌▀▌▛▌▌▌▛▘▛▌  ▜▘█▌▛▘▜▘")
-            print("▐ ▐▖▌▙▌▙▌▙▖▌ █▌▙▌█▌▙▌▙▌▄▌▙▌▄▖▐▖▙▖▄▌▐▖")
-            print("     ▌ ▌                             ") 
-            print("with <3 by (#4|2\n\n") 
+        ydotoolscript.write(
+            "# parsed onto ydotool commands by flipper0badusb_test with <3 by (#4|2\n"
+        )
+        ydotoolscript.write(
+            "# https://github.com/carvilsi/flipper0-badUSB-linux-tester\n"
+        )
 
-            print(f"Parsing...\n")
-        
+        if not silence:
+            header()
+            print("Parsing...\n")
+
         command_num = 0
         for line in duckyscript:
             if len(line.strip()) > 0:
@@ -179,11 +205,8 @@ def main():
             os.system(f"sh {fout}")
 
     except IndexError:
-        print("Wrong arguments.\n")
-        print("Usage:\n")
-        print("\t$ ./flipper0badusb_test <flipper_ducky_script_file.txt> <out_file.sh> [test]\n")
+        show_help()
 
-        print("\nIf test is provided will run the DuckyScript after parsing it\n")
     except Exception as e:
         print(f"Error: {e}")
         raise e

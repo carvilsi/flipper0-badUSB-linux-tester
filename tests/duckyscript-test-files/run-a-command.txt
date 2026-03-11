@@ -1,0 +1,11 @@
+ID 1234:abcd Generic:USB Keyboard
+
+REM run command simple 
+
+REM esc just in case
+ESC
+REM Open run-command
+ALT F2
+DELAY 500
+STRINGLN echo "foobar"
+
