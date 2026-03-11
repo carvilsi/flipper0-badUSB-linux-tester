@@ -8,6 +8,7 @@ I've been searching and testing some other solutions but I found lot of issues r
 ## Usage
 
 `$ git clone https://github.com/carvilsi/flipper0-badUSB-linux-tester`
+
 `$ cd flipper0-badUSB-linux-tester`
 
 `$ chmod a+x flipper0badusb_test`
@@ -46,6 +47,14 @@ Depends on [ydotool](https://github.com/ReimuNotMoe/ydotool) for command-line au
 - Run the service: `$ systemctl --user start ydotool`
 
 Note: had some inssues install it it from Ubuntu current package, but [build it from source](https://github.com/ReimuNotMoe/ydotool?tab=readme-ov-file#build) and install it worked for me.
+
+## Tests
+
+The test are very simple, just comparing the expected ydotool output with the provided DockyScript.
+
+Tu run it: 
+
+`$ sh tests/test.sh`
 
 ## Current Flipper's DuckyScript implemented commands
 
