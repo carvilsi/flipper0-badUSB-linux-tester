@@ -13,9 +13,8 @@ I've been searching and testing some other solutions but I found lot of issues r
 
 `$ chmod a+x flipper0badusb_test`
 
-```
-Wrong arguments.
 
+```
 Usage:
 
     $ ./flipper0badusb_test <flipper_ducky_script_file.txt> <out_file.sh> [test | silence]
