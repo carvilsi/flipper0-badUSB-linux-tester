@@ -15,22 +15,28 @@ I've been searching and testing some other solutions but I found lot of issues r
 
 
 ```
-Usage:
+usage: flipper0badusb_test.py [-h] [-o OUT] [-t] [-s] ducky_script
 
-    $ ./flipper0badusb_test <flipper_ducky_script_file.txt> <out_file.sh> [test | silence]
+Test your FlipperZero's DuckyScripts without uploading to device
 
+positional arguments:
+  ducky_script   FlipperZero DuckyScript to test
 
-If "test" is provided will run the DuckyScript after parsing it to ydotool.
-If "silence" is provided will generate ydotool file without print to stdout. "Silence is goldenn" mode.
+options:
+  -h, --help     show this help message and exit
+  -o, --out OUT  Output filename; e.g my_out.sh; default out.sh
+  -t, --test     If we want to test after parsing the DuckyScript to ydotool
+                 format
+  -s, --silence  Silence is golden; no output to stdout
 ```
 
-The you can test your FlipperZero's DuckyScript with:
+Once the DuckyScript has been parsed to ydotool then you can test your FlipperZero's DuckyScript with:
 
-`$ sh out_file.sh`
+`$ sh my_out.sh`
 
 Or pass "test" after the command line and it will be executed after creating the sh file.
 
-`$ ./flipper0badusb_test.py examples/hello-world.txt out.sh test`
+`$ ./flipper0badusb_test.py examples/hello-world.txt -o out.sh --test`
 
 ### Dependencies
 Depends on [ydotool](https://github.com/ReimuNotMoe/ydotool) for command-line automation tool on Linux. 

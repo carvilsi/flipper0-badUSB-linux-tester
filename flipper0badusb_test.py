@@ -3,6 +3,7 @@
 import os
 import re
 import sys
+import argparse
 
 YDTL = "ydotool"
 INPUT_EVENT_CODES_H = "/usr/include/linux/input-event-codes.h"
@@ -150,31 +151,38 @@ def header():
     print("with <3 by (#4|2\n\n")
 
 
-def show_help():
-    header()
-    print("Wrong arguments.\n")
-    print("Usage:\n")
-    print(
-        "\t$ ./flipper0badusb_test <flipper_ducky_script_file.txt> <out_file.sh> [test | silence]\n"
-    )
-    print(
-        "\nIf 'test' is provided will run the DuckyScript after parsing it to ydotool"
-    )
-    print(
-        "If 'silence' is provided will generate ydotool file without print to stdout. 'Silence is goldenn' mode\n"
-    )
+def parse_cli():
+    parser = argparse.ArgumentParser(
+            description="Test your FlipperZero's DuckyScripts without uploading to device",
+            epilog="With <3 by (#4|2; Only works on Linux; to get more info please check: https://github.com/carvilsi/flipper0-badUSB-linux-tester?tab=readme-ov-file#flipper0-badusb-linux-tester")
+    parser.add_argument(
+            "ducky_script",
+            help="FlipperZero DuckyScript to test")
+    parser.add_argument(
+            "-o", "--out",
+            help="Output filename; e.g my_out.sh; default out.sh")
+    parser.add_argument(
+            "-t", "--test",
+            help="If we want to test after parsing the DuckyScript to ydotool format",
+            action="store_true")
+    parser.add_argument(
+            "-s", "--silence",
+            help="Silence is golden; no output to stdout",
+            action="store_true")
+
+    args = parser.parse_args()
+
+    return args
 
 
 def main():
+    args = parse_cli()
     try:
-        fdckscrp = sys.argv[1]
-        duckyscript = open(fdckscrp, "r", encoding="UTF-8")
 
-        fout = sys.argv[2]
+        duckyscript = open(args.ducky_script, "r", encoding="UTF-8")
+
+        fout = args.out if args.out is not None else "out.sh"
         ydotoolscript = open(fout, "w", encoding="UTF-8")
-
-        execute = True if len(sys.argv) > 3 and sys.argv[3] == "test" else False
-        silence = True if len(sys.argv) > 3 and sys.argv[3] == "silence" else False
 
         ydotoolscript.write("#!/bin/bash\n\n")
 
@@ -185,27 +193,24 @@ def main():
             "# https://github.com/carvilsi/flipper0-badUSB-linux-tester\n"
         )
 
-        if not silence:
+        if not args.silence:
             header()
             print("Parsing...\n")
 
         command_num = 0
         for line in duckyscript:
             if len(line.strip()) > 0:
-                process_duckyscript_line(line, command_num, ydotoolscript, silence)
+                process_duckyscript_line(line, command_num, ydotoolscript, args.silence)
                 command_num += 1
 
-        if not silence:
-            print(f"Parsed {command_num} lines from {fdckscrp} onto {fout}\n")
+        if not args.silence:
+            print(f"Parsed {command_num} lines from {args.ducky_script} onto {fout}\n")
 
         duckyscript.close()
         ydotoolscript.close()
 
-        if execute:
+        if args.test:
             os.system(f"sh {fout}")
-
-    except IndexError:
-        show_help()
 
     except Exception as e:
         print(f"Error: {e}")
@@ -214,3 +219,4 @@ def main():
 
 if __name__ == "__main__":
     main()
+
