@@ -1,5 +1,9 @@
 # Changelog
 
+# [v1.2.0](https://github.com/carvilsi/caetra/releases/tag/v1.2.0) (2026-17-03)
+
+- added cli argparse
+
 # [v1.1.0](https://github.com/carvilsi/caetra/releases/tag/v1.1.0) (2026-11-03)
 
 - added tests
