@@ -2,7 +2,6 @@
 
 import os
 import re
-import sys
 import argparse
 
 YDTL = "ydotool"
@@ -153,22 +152,25 @@ def header():
 
 def parse_cli():
     parser = argparse.ArgumentParser(
-            description="Test your FlipperZero's DuckyScripts without uploading to device",
-            epilog="With <3 by (#4|2; Only works on Linux; to get more info please check: https://github.com/carvilsi/flipper0-badUSB-linux-tester?tab=readme-ov-file#flipper0-badusb-linux-tester")
+        description="Test your FlipperZero's DuckyScripts without uploading to device",
+        epilog="With <3 by (#4|2; Only works on Linux; to get more info please check: https://github.com/carvilsi/flipper0-badUSB-linux-tester?tab=readme-ov-file#flipper0-badusb-linux-tester",
+    )
+    parser.add_argument("ducky_script", help="FlipperZero DuckyScript to test")
     parser.add_argument(
-            "ducky_script",
-            help="FlipperZero DuckyScript to test")
+        "-o", "--out", help="Output filename; e.g my_out.sh; default out.sh"
+    )
     parser.add_argument(
-            "-o", "--out",
-            help="Output filename; e.g my_out.sh; default out.sh")
+        "-t",
+        "--test",
+        help="If we want to test after parsing the DuckyScript to ydotool format",
+        action="store_true",
+    )
     parser.add_argument(
-            "-t", "--test",
-            help="If we want to test after parsing the DuckyScript to ydotool format",
-            action="store_true")
-    parser.add_argument(
-            "-s", "--silence",
-            help="Silence is golden; no output to stdout",
-            action="store_true")
+        "-s",
+        "--silence",
+        help="Silence is golden; no output to stdout",
+        action="store_true",
+    )
 
     args = parser.parse_args()
 
@@ -178,7 +180,6 @@ def parse_cli():
 def main():
     args = parse_cli()
     try:
-
         duckyscript = open(args.ducky_script, "r", encoding="UTF-8")
 
         fout = args.out if args.out is not None else "out.sh"
@@ -219,4 +220,3 @@ def main():
 
 if __name__ == "__main__":
     main()
-
