@@ -25,7 +25,7 @@ do_tests() {
                 _out=$FOLDER_OUT/${_filenamewe}_out.sh
                 
                 # convert DuckyScripts to ydotool output ones
-                python flipper0badusb_test.py $_duckyscript $_out silence
+                python flipper0badusb_test.py $_duckyscript -o $_out --silence
 
                 # more useful filenames
                 _expct=$FOLDER_EXPECTED_OUT/expected_${_filenamewe}_out.sh
