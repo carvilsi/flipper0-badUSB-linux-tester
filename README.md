@@ -39,7 +39,9 @@ Or pass "test" after the command line and it will be executed after creating the
 `$ ./flipper0badusb_test.py examples/hello-world.txt -o out.sh --test`
 
 ### Dependencies
-Depends on [ydotool](https://github.com/ReimuNotMoe/ydotool) for command-line automation tool on Linux. 
+Depends on [ydotool](https://github.com/ReimuNotMoe/ydotool) for command-line automation tool on Linux. If you can afford, please consider support the project.
+
+Check this [issue](https://github.com/ReimuNotMoe/ydotool/issues/284) in case of problems related with **typing special characters**.
 
 #### ArchLinux
 - Install it: `$ sudo pacman -S ydotool`
