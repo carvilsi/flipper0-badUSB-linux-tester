@@ -27,6 +27,7 @@ class DuckyScriptCommands:
     DEFAULT_DELAY = "DEFAULT_DELAY"
     DEFAULTDELAY = "DEFAULTDELAY"
     STRINGLN = "STRINGLN"
+    STORAGE = "STORAGE"
     STRING = "STRING"
     DELAY = "DELAY"
     ENTER = "ENTER"
@@ -90,7 +91,7 @@ def process_duckyscript_line(line, num, fos, silence=False):
             else:
                 dcmd = build_ydotool_command_key(DuckyScriptCommands.GUI_KEY)
 
-        case DuckyScriptCommands.REM:
+        case DuckyScriptCommands.REM | DuckyScriptCommands.STORAGE:
             dcmd = f"{DuckyScriptCommands.REM_SYMB} {' '.join(commands[1:])}\n"
 
         case DuckyScriptCommands.STRING:
